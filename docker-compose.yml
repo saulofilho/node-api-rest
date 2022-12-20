@@ -1,0 +1,46 @@
+version: '3'
+services:
+  app:
+    build: .
+    command: npm start
+    restart: always
+    container_name: app-gobarber
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - redis
+      - postgres
+    ports:
+      - "3333:3333"
+    volumes:
+      - .:/usr/node-api-rest
+    working_dir: /usr/node-api-rest
+  mongo:
+    image: mongo
+    restart: always
+    container_name: db-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_URL: ${MONGO_URL}
+  redis:
+    image: redis
+    restart: always
+    container_name: db-redis
+    ports:
+      - "6379:6379"
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+  postgres:
+    image: postgres
+    restart: always
+    container_name: db-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
